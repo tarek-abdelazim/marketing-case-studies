@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tarek Abdelazim Azam — Performance & Growth Marketing Strategist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+/* ==================== CSS VARIABLES ==================== */
+:root {
+  --bg: #060612;
+  --bg2: #0a0a1f;
+  --indigo: #4f46e5;
+  --indigo-light: #6366f1;
+  --pink: #ec4899;
+  --cyan: #06b6d4;
+  --amber: #f59e0b;
+  --white: #f8fafc;
+  --muted: #94a3b8;
+  --card-bg: rgba(15,15,40,0.7);
+  --border: rgba(99,102,241,0.2);
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --glow-indigo: 0 0 40px rgba(79,70,229,0.4);
+  --glow-pink: 0 0 40px rgba(236,72,153,0.4);
+  --glow-cyan: 0 0 40px rgba(6,182,212,0.4);
+}
+
+/* ==================== RESET & BASE ==================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: none;
+  line-height: 1.6;
+}
+
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--indigo), var(--pink));
+  border-radius: 99px;
+}
+
+/* ==================== NOISE OVERLAY ==================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ==================== PARTICLE CANVAS ==================== */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ==================== CUSTOM CURSOR ==================== */
+#cursor-dot {
+  width: 8px; height: 8px;
+  background: var(--cyan);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+  transition: width 0.2s, height 0.2s, background 0.2s;
+}
+#cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(99,102,241,0.7);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, border-color 0.3s;
+}
+body:has(a:hover) #cursor-dot, body:has(button:hover) #cursor-dot { width: 14px; height: 14px; background: var(--pink); }
+body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 54px; height: 54px; border-color: var(--pink); }
+
+/* ==================== LOADING SCREEN ==================== */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#loader.hidden { opacity: 0; visibility: hidden; }
+.loader-initials {
+  font-family: var(--font-head);
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--indigo), var(--pink), var(--cyan), var(--amber));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradShift 2s ease infinite;
+  letter-spacing: -0.02em;
+}
+.loader-bar-wrap {
+  width: min(320px, 80vw);
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.loader-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--indigo), var(--pink), var(--cyan));
+  border-radius: 99px;
+  animation: loadProgress 1.8s ease-out forwards;
+}
+@keyframes loadProgress { 0%{width:0%} 80%{width:85%} 100%{width:100%} }
+.loader-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ==================== NAVBAR ==================== */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(6,6,18,0.7);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-100%);
+  animation: slideDown 0.6s 2.2s ease forwards;
+}
+@keyframes slideDown { to { transform: translateY(0); } }
+.nav-logo {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, var(--indigo-light), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  position: relative;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 100%;
+  height: 1.5px;
+  background: linear-gradient(90deg, var(--indigo), var(--cyan));
+  transition: right 0.3s ease;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-links a:hover::after { right: 0; }
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; background: none; border: none; }
+.nav-hamburger span { width: 24px; height: 1.5px; background: var(--white); display: block; transition: 0.3s; }
+
+/* ==================== SECTIONS COMMON ==================== */
+section { position: relative; z-index: 1; padding: 6rem 2rem; }
+.container { max-width: 1200px; margin: 0 auto; }
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid rgba(6,182,212,0.3);
+  border-radius: 99px;
+  background: rgba(6,182,212,0.05);
+}
+.section-tag::before { content: ''; width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; }
+.section-title {
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+.grad-text {
+  background: linear-gradient(135deg, var(--indigo-light), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ==================== SCROLL REVEAL ==================== */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-left.visible { opacity: 1; transform: none; }
+.reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-right.visible { opacity: 1; transform: none; }
+
+/* ==================== HERO ==================== */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 7rem;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.hero-avail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 99px;
+  padding: 0.35rem 1rem;
+  background: rgba(52,211,153,0.05);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.hero-avail::before { content: ''; width: 7px; height: 7px; background: #34d399; border-radius: 50%; animation: pulse-green 1.5s ease infinite; }
+@keyframes pulse-green { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0.5)} 50%{box-shadow:0 0 0 6px rgba(52,211,153,0)} }
+.hero-name {
+  font-family: var(--font-head);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #ffffff 0%, var(--indigo-light) 30%, var(--pink) 60%, var(--cyan) 80%, #ffffff 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerName 4s linear infinite;
+}
+@keyframes shimmerName {
+  0% { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+  font-weight: 300;
+}
+.hero-subtitle span { color: var(--amber); font-weight: 500; }
+.hero-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, var(--indigo), var(--pink));
+  color: white;
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  cursor: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 20px rgba(79,70,229,0.4);
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(79,70,229,0.6); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: none;
+  background: transparent;
+  transition: all 0.3s;
+}
+.btn-ghost:hover { border-color: var(--cyan); background: rgba(6,182,212,0.08); transform: translateY(-3px); }
+
+/* 3D CARD */
+.hero-card-wrap {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.hero-orb {
+  position: absolute;
+  width: 340px; height: 340px;
+  background: radial-gradient(circle, rgba(79,70,229,0.3) 0%, rgba(236,72,153,0.15) 50%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: orbPulse 4s ease-in-out infinite;
+}
+@keyframes orbPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+.hero-ring {
+  position: absolute;
+  width: 300px; height: 300px;
+  border: 2px dashed rgba(99,102,241,0.3);
+  border-radius: 50%;
+  animation: spinRing 12s linear infinite;
+}
+@keyframes spinRing { to { transform: rotate(360deg); } }
+.hero-ring-2 {
+  position: absolute;
+  width: 340px; height: 340px;
+  border: 1px dashed rgba(236,72,153,0.2);
+  border-radius: 50%;
+  animation: spinRing 20s linear infinite reverse;
+}
+.hero-3d-card {
+  position: relative;
+  width: 260px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  backdrop-filter: blur(30px);
+  animation: floatCard 6s ease-in-out infinite;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), var(--glow-indigo);
+  text-align: center;
+}
+@keyframes floatCard {
+  0%,100% { transform: translateY(0) rotateY(-5deg) rotateX(3deg); }
+  50% { transform: translateY(-20px) rotateY(5deg) rotateX(-3deg); }
+}
+.card-initials {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, var(--indigo), var(--pink));
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 auto 1.2rem;
+  box-shadow: var(--glow-indigo);
+}
+.card-name {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+}
+.card-role { font-size: 0.75rem; color: var(--cyan); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+.card-stats { display: flex; gap: 0.5rem; justify-content: center; }
+.stat-chip {
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.7rem;
+  text-align: center;
+}
+.stat-chip-num { font-family: var(--font-head); font-size: 1rem; font-weight: 800; display: block; color: var(--white); }
+.stat-chip-lbl { color: var(--muted); font-size: 0.62rem; }
+
+/* ==================== MARQUEE ==================== */
+.marquee-section {
+  overflow: hidden;
+  padding: 1.5rem 0;
+  background: rgba(10,10,31,0.6);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative; z-index: 1;
+}
+.marquee-track {
+  display: flex;
+  gap: 2.5rem;
+  animation: marqueeAnim 30s linear infinite;
+  width: max-content;
+}
+@keyframes marqueeAnim { to { transform: translateX(-50%); } }
+.marquee-item {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.marquee-item::before { content: '◆'; font-size: 0.5rem; color: var(--indigo); }
+
+/* ==================== SKILLS ==================== */
+#skills { background: linear-gradient(180deg, transparent, rgba(15,15,40,0.4), transparent); }
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+.skill-bars { display: flex; flex-direction: column; gap: 1.5rem; }
+.skill-bar-item {}
+.skill-bar-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+.skill-bar-name { font-size: 0.9rem; font-weight: 500; }
+.skill-bar-pct { font-size: 0.85rem; color: var(--muted); font-family: var(--font-head); }
+.skill-bar-track {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  overflow: hidden;
+}
+.skill-bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: shimmerBar 2s ease 1.5s forwards;
+}
+@keyframes shimmerBar { to { transform: translateX(100%); } }
+
+.chips-wrap { margin-top: 3rem; }
+.chips-title { font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--muted); }
+.chips-cloud { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.tech-chip {
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: default;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid;
+}
+.tech-chip:hover { transform: translateY(-5px); }
+.chip-indigo { background: rgba(79,70,229,0.1); border-color: rgba(79,70,229,0.4); color: #a5b4fc; }
+.chip-pink { background: rgba(236,72,153,0.1); border-color: rgba(236,72,153,0.4); color: #f9a8d4; }
+.chip-cyan { background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.4); color: #67e8f9; }
+.chip-amber { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.4); color: #fcd34d; }
+
+/* ==================== EXPERIENCE TIMELINE ==================== */
+#experience { position: relative; }
+.timeline {
+  position: relative;
+  margin-top: 3rem;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--indigo), var(--pink), var(--cyan), var(--amber));
+  border-radius: 99px;
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.timeline-item.visible { opacity: 1; transform: none; }
+.timeline-dot {
+  position: absolute;
+  left: -2.4rem;
+  top: 1.2rem;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--indigo);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 10px var(--indigo);
+}
+.timeline-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  cursor: default;
+}
+.timeline-card:hover {
+  transform: translateX(8px);
+  box-shadow: var(--glow-indigo);
+  border-color: rgba(99,102,241,0.5);
+}
+.tc-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+.tc-title { font-family: var(--font-head); font-weight: 700; font-size: 1rem; }
+.tc-location { font-size: 0.75rem; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); border-radius: 99px; padding: 0.2rem 0.7rem; background: rgba(245,158,11,0.05); white-space: nowrap; }
+.tc-company { font-size: 0.9rem; color: var(--cyan); font-weight: 500; margin-bottom: 0.8rem; }
+.tc-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tc-badge {
+  font-size: 0.7rem; font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  border: 1px solid rgba(236,72,153,0.3);
+  color: #f9a8d4;
+  background: rgba(236,72,153,0.06);
+}
+
+/* ==================== PROJECTS ==================== */
+#projects {}
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.project-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.8rem;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; right: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--indigo), var(--pink), var(--cyan));
+  transition: left 0.5s ease, right 0.5s ease;
+}
+.project-card:hover::before { left: 0; right: 0; }
+.project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-indigo); }
+.project-emoji { font-size: 2rem; margin-bottom: 1rem; display: block; }
+.project-name { font-family: var(--font-head); font-weight: 700; font-size: 1rem; margin-bottom: 0.7rem; }
+.project-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.2rem; font-weight: 300; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.project-tag {
+  font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  background: rgba(79,70,229,0.1); border: 1px solid rgba(79,70,229,0.3); color: #a5b4fc;
+}
+
+/* ==================== EDUCATION & LANGUAGES ==================== */
+#education-lang { background: linear-gradient(180deg, transparent, rgba(15,15,40,0.4), transparent); }
+.edu-lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+.edu-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.edu-card:hover { transform: translateY(-5px); box-shadow: var(--glow-cyan); }
+.edu-icon {
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--cyan), var(--indigo));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1.2rem;
+}
+.edu-title { font-family: var(--font-head); font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+.edu-inst { font-size: 0.85rem; color: var(--cyan); font-weight: 500; margin-bottom: 0.3rem; }
+.edu-note { font-size: 0.8rem; color: var(--muted); }
+
+/* Languages */
+.lang-section h3 { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--muted); }
+.lang-item { margin-bottom: 1.5rem; }
+.lang-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+.lang-name { font-weight: 600; font-size: 0.95rem; }
+.lang-pct { color: var(--amber); font-weight: 600; font-family: var(--font-head); }
+.lang-track {
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 99px; overflow: hidden;
+}
+.lang-fill {
+  height: 100%; border-radius: 99px; width: 0;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.lang-badge {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 99px;
+}
+
+/* ==================== CONTACT ==================== */
+#contact {}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
+  margin-top: 3rem;
+}
+.contact-cards { display: flex; flex-direction: column; gap: 1rem; }
+.contact-card {
+  display: flex; align-items: center; gap: 1.2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.2rem 1.8rem;
+  text-decoration: none; color: inherit;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.contact-card:hover { transform: translateX(10px); box-shadow: var(--glow-indigo); border-color: rgba(99,102,241,0.5); }
+.contact-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.contact-label { font-size: 0.72rem; color: var(--muted); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.1rem; }
+.contact-value { font-size: 0.95rem; font-weight: 500; }
+
+/* Ripple avatar */
+.contact-avatar-wrap { position: relative; display: flex; align-items: center; justify-content: center; width: 240px; height: 240px; flex-shrink: 0; }
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  opacity: 0;
+}
+.ripple-1 { width: 120px; height: 120px; border-color: rgba(79,70,229,0.5); animation: rippleAnim 3s ease-out infinite; }
+.ripple-2 { width: 170px; height: 170px; border-color: rgba(236,72,153,0.4); animation: rippleAnim 3s ease-out 1s infinite; }
+.ripple-3 { width: 220px; height: 220px; border-color: rgba(6,182,212,0.3); animation: rippleAnim 3s ease-out 2s infinite; }
+@keyframes rippleAnim {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.contact-avatar {
+  width: 100px; height: 100px;
+  background: linear-gradient(135deg, var(--indigo), var(--pink));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head);
+  font-size: 2rem; font-weight: 800;
+  color: white;
+  position: relative; z-index: 1;
+  box-shadow: var(--glow-indigo);
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+}
+footer p { font-size: 0.82rem; color: var(--muted); }
+footer span { color: var(--pink); }
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes gradShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; }
+  .hero-card-wrap { margin-top: 2rem; }
+  .hero-desc { margin: 0 auto 2.5rem; }
+  .hero-btns { justify-content: center; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr 1fr; }
+  .edu-lang-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; justify-items: center; }
+  .contact-avatar-wrap { order: -1; }
+}
+@media (max-width: 600px) {
+  section { padding: 4rem 1.2rem; }
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: fixed;
+    inset: 0;
+    background: rgba(6,6,18,0.98);
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    z-index: 490;
+  }
+  .nav-hamburger { display: flex; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .hero-3d-card { width: 220px; }
+  .timeline { padding-left: 1.2rem; }
+  .timeline-dot { left: -1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-initials">TAA</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-text">Loading Portfolio...</div>
+</div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">Tarek A. Azam</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero" onclick="closeNav()">Home</a></li>
+    <li><a href="#skills" onclick="closeNav()">Skills</a></li>
+    <li><a href="#experience" onclick="closeNav()">Experience</a></li>
+    <li><a href="#projects" onclick="closeNav()">Projects</a></li>
+    <li><a href="#contact" onclick="closeNav()">Contact</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-avail reveal" style="transition-delay:0.1s">Available for New Projects</div>
+        <h1 class="hero-name reveal" style="transition-delay:0.2s">Tarek<br/>Abdelazim<br/>Azam</h1>
+        <p class="hero-subtitle reveal" style="transition-delay:0.3s">Performance & <span>Growth Marketing Strategist</span></p>
+        <p class="hero-desc reveal" style="transition-delay:0.4s">I specialize in transforming brand potential into measurable growth through a blend of data-driven performance marketing and high-impact visual storytelling. With a focus on ROI and brand scalability, I bridge the gap between creative strategy and technical execution.</p>
+        <div class="hero-btns reveal" style="transition-delay:0.5s">
+          <a href="#contact" class="btn-primary">Let's Work Together ↗</a>
+          <a href="#experience" class="btn-ghost">View Experience →</a>
+        </div>
+      </div>
+      <div class="hero-card-wrap reveal-right" style="transition-delay:0.3s">
+        <div class="hero-orb"></div>
+        <div class="hero-ring"></div>
+        <div class="hero-ring-2"></div>
+        <div class="hero-3d-card">
+          <div class="card-initials">TAA</div>
+          <div class="card-name">Tarek Abdelazim</div>
+          <div class="card-role">Growth Marketing Strategist</div>
+          <div class="card-stats">
+            <div class="stat-chip">
+              <span class="stat-chip-num">5+</span>
+              <span class="stat-chip-lbl">Years Exp</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-chip-num">4.2x</span>
+              <span class="stat-chip-lbl">Avg ROAS</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-chip-num">$500K+</span>
+              <span class="stat-chip-lbl">Ad Spend</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <!-- items injected by JS -->
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <span class="section-tag reveal">Expertise</span>
+    <h2 class="section-title reveal"><span class="grad-text">Skills &</span> Competencies</h2>
+    <div class="skills-grid">
+      <div class="skill-bars reveal-left" id="skillBars">
+        <!-- injected by JS -->
+      </div>
+      <div class="reveal-right">
+        <div class="chips-wrap">
+          <div class="chips-title">Tech & Tools Stack</div>
+          <div class="chips-cloud" id="chipsCloud"><!-- injected --></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <span class="section-tag reveal">Work History</span>
+    <h2 class="section-title reveal"><span class="grad-text">Experience</span> Timeline</h2>
+    <div class="timeline" id="timeline"><!-- injected --></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <span class="section-tag reveal">Portfolio</span>
+    <h2 class="section-title reveal">Key <span class="grad-text">Projects &</span> Results</h2>
+    <div class="projects-grid" id="projectsGrid"><!-- injected --></div>
+  </div>
+</section>
+
+<!-- EDUCATION & LANGUAGES -->
+<section id="education-lang">
+  <div class="container">
+    <span class="section-tag reveal">Background</span>
+    <h2 class="section-title reveal">Education & <span class="grad-text">Languages</span></h2>
+    <div class="edu-lang-grid">
+      <div class="reveal-left">
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="edu-card">
+            <div class="edu-icon">🎓</div>
+            <div class="edu-title">Marketing & Business Strategy</div>
+            <div class="edu-inst">Self-Directed & Professional Development</div>
+            <div class="edu-note">5+ years of hands-on performance marketing, media buying, and growth strategy across 30+ international clients spanning Saudi Arabia, UAE, Qatar, Egypt, Oman, Tunisia, Georgia, Iraq & Kuwait.</div>
+          </div>
+          <div class="edu-card">
+            <div class="edu-icon">🤖</div>
+            <div class="edu-title">AI-Driven Marketing Specialist</div>
+            <div class="edu-inst">Continuous Learning — ChatGPT, Claude, Midjourney, Adobe Firefly</div>
+            <div class="edu-note">Expert in leveraging cutting-edge AI tools to automate workflows, enhance creative output, and drive unprecedented business growth.</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="lang-section">
+          <h3>Language Proficiency</h3>
+          <div class="lang-item">
+            <div class="lang-header">
+              <span class="lang-name">Arabic</span>
+              <span class="lang-pct">95%</span>
+            </div>
+            <div class="lang-track">
+              <div class="lang-fill" data-width="95" style="background:linear-gradient(90deg,var(--indigo),var(--pink))"></div>
+            </div>
+            <span class="lang-badge" style="background:rgba(79,70,229,0.1);border:1px solid rgba(79,70,229,0.3);color:#a5b4fc">Native Speaker</span>
+          </div>
+          <div class="lang-item">
+            <div class="lang-header">
+              <span class="lang-name">English</span>
+              <span class="lang-pct">85%</span>
+            </div>
+            <div class="lang-track">
+              <div class="lang-fill" data-width="85" style="background:linear-gradient(90deg,var(--cyan),var(--indigo))"></div>
+            </div>
+            <span class="lang-badge" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:#67e8f9">Professional Proficiency</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <span class="section-tag reveal">Get In Touch</span>
+    <h2 class="section-title reveal">Let's <span class="grad-text">Connect &</span> Collaborate</h2>
+    <div class="contact-grid">
+      <div class="contact-cards">
+        <a class="contact-card reveal" style="transition-delay:0.1s" href="mailto:tarekabdelazim0900@gmail.com">
+          <div class="contact-icon" style="background:linear-gradient(135deg,var(--indigo),var(--pink))">📧</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value">tarekabdelazim0900@gmail.com</div>
+          </div>
+        </a>
+        <a class="contact-card reveal" style="transition-delay:0.2s" href="tel:+201274751990">
+          <div class="contact-icon" style="background:linear-gradient(135deg,var(--cyan),var(--indigo))">📱</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value">+201274751990</div>
+          </div>
+        </a>
+        <div class="contact-card reveal" style="transition-delay:0.3s">
+          <div class="contact-icon" style="background:linear-gradient(135deg,var(--amber),var(--pink))">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Egypt — Remote Worldwide</div>
+          </div>
+        </div>
+        <a class="contact-card reveal" style="transition-delay:0.4s" href="https://www.behance.net/tarekabdelazim" target="_blank" rel="noopener noreferrer">
+          <div class="contact-icon" style="background:linear-gradient(135deg,#1769ff,#0057ff)">🎨</div>
+          <div>
+            <div class="contact-label">Behance Portfolio</div>
+            <div class="contact-value">behance.net/tarekabdelazim</div>
+          </div>
+        </a>
+        <a class="contact-card reveal" style="transition-delay:0.5s" href="https://www.linkedin.com/in/tarek-abdelazim-azam-6b139b197" target="_blank" rel="noopener noreferrer">
+          <div class="contact-icon" style="background:linear-gradient(135deg,#0077b5,#005885)">💼</div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value">Tarek Abdelazim Azam</div>
+          </div>
+        </a>
+      </div>
+      <div class="contact-avatar-wrap reveal-right">
+        <div class="ripple ripple-1"></div>
+        <div class="ripple ripple-2"></div>
+        <div class="ripple ripple-3"></div>
+        <div class="contact-avatar">TAA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Designed & Developed with <span>♥</span> — Tarek Abdelazim Azam © 2026. All rights reserved.</p>
+</footer>
+
+<script>
+/* ============================================================
+   LOADER
+============================================================ */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+    triggerScrollReveal();
+  }, 2200);
+});
+
+/* ============================================================
+   CUSTOM CURSOR
+============================================================ */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let ringX = 0, ringY = 0, dotX = 0, dotY = 0;
+document.addEventListener('mousemove', e => { dotX = e.clientX; dotY = e.clientY; });
+(function animateCursor() {
+  ringX += (dotX - ringX) * 0.12;
+  ringY += (dotY - ringY) * 0.12;
+  dot.style.left = dotX + 'px';
+  dot.style.top = dotY + 'px';
+  ring.style.left = ringX + 'px';
+  ring.style.top = ringY + 'px';
+  requestAnimationFrame(animateCursor);
+})();
+
+/* ============================================================
+   PARTICLE CANVAS
+============================================================ */
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COLORS = ['rgba(79,70,229,0.7)', 'rgba(236,72,153,0.7)', 'rgba(6,182,212,0.7)', 'rgba(245,158,11,0.7)'];
+  const N = 80;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for(let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: Math.random() * 2 + 1,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)]
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for(let i = 0; i < N; i++) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0 || p.x > W) p.vx *= -1;
+      if(p.y < 0 || p.y > H) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      for(let j = i + 1; j < N; j++) {
+        const q = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = p.color.replace('0.7', String((1 - dist / 120) * 0.3));
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================
+   NAV HAMBURGER
+============================================================ */
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+function closeNav() {
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+/* ============================================================
+   MARQUEE DATA
+============================================================ */
+const companies = [
+  'Oryx Company Qatar','SYD Company Saudi Arabia','Swedish Academy Tunisia',
+  'Creaova UAE','Tiyn Store KSA','Habt Fn Store KSA','Smart Almanasah KSA',
+  'Lifescape UAE','Oacode Agency Qatar','Bannor Oud KSA','Travels Group Georgia',
+  'Jeem Stores KSA','Safer Free Travel','Bunstar Restaurant KSA','Tobal Clinics KSA',
+  'Asmak Alnawrs KSA','Easy Growth Agency KSA','Jahbath Academy Oman',
+  'Ayla Agency Egypt','DR. Ahmed Fawzy Eye Clinic','Dawna Clinics KSA',
+  'Dr. Ayman Altabaa Egypt','Al Qasim Clinics KSA','Alfa Zone Stores',
+  'Azwaq Eltmoor KSA','Safer Free Travel UAE','Deka Store KSA',
+  'Billion Cars Oman','Goal Store KSA','Sayo Kitchen','Yasmeen Alhumood KSA',
+  'Artway Agency Iraq','Daman Plus Egypt'
+];
+(function buildMarquee() {
+  const track = document.getElementById('marqueeTrack');
+  const doubled = [...companies, ...companies];
+  doubled.forEach(c => {
+    const el = document.createElement('span');
+    el.className = 'marquee-item';
+    el.textContent = c;
+    track.appendChild(el);
+  });
+})();
+
+/* ============================================================
+   SKILLS DATA
+============================================================ */
+const skills = [
+  { name: 'Performance Marketing', pct: 95, grad: 'linear-gradient(90deg,#4f46e5,#ec4899)' },
+  { name: 'Media Buying (All Platforms)', pct: 95, grad: 'linear-gradient(90deg,#ec4899,#f59e0b)' },
+  { name: 'Growth Strategy & AARRR', pct: 90, grad: 'linear-gradient(90deg,#06b6d4,#4f46e5)' },
+  { name: 'Meta Ads Manager', pct: 92, grad: 'linear-gradient(90deg,#4f46e5,#06b6d4)' },
+  { name: 'Google Ads / GA4', pct: 88, grad: 'linear-gradient(90deg,#f59e0b,#ec4899)' },
+  { name: 'AI-Driven Marketing Automation', pct: 90, grad: 'linear-gradient(90deg,#06b6d4,#ec4899)' },
+  { name: 'Data Analytics & CRO', pct: 85, grad: 'linear-gradient(90deg,#ec4899,#4f46e5)' },
+  { name: 'Social Media Management', pct: 85, grad: 'linear-gradient(90deg,#4f46e5,#f59e0b)' },
+  { name: 'TikTok & Snapchat Ads', pct: 80, grad: 'linear-gradient(90deg,#06b6d4,#4f46e5)' },
+  { name: 'Brand Design & Strategy', pct: 78, grad: 'linear-gradient(90deg,#f59e0b,#06b6d4)' },
+];
+
+const chips = [
+  { name: 'Meta Ads Manager', cls: 'chip-indigo' },
+  { name: 'Google Ads', cls: 'chip-cyan' },
+  { name: 'TikTok Ads', cls: 'chip-pink' },
+  { name: 'LinkedIn Campaigns', cls: 'chip-amber' },
+  { name: 'Snapchat Ads', cls: 'chip-indigo' },
+  { name: 'Google Analytics 4', cls: 'chip-cyan' },
+  { name: 'Google Tag Manager', cls: 'chip-pink' },
+  { name: 'Hotjar / MS Clarity', cls: 'chip-amber' },
+  { name: 'Google Looker Studio', cls: 'chip-indigo' },
+  { name: 'ChatGPT', cls: 'chip-cyan' },
+  { name: 'Claude AI', cls: 'chip-pink' },
+  { name: 'Midjourney Pro', cls: 'chip-amber' },
+  { name: 'Adobe Firefly', cls: 'chip-indigo' },
+  { name: 'Canva', cls: 'chip-cyan' },
+  { name: 'Jasper / Copy.ai', cls: 'chip-pink' },
+  { name: 'Facebook Business Manager', cls: 'chip-amber' },
+  { name: 'Pixel & Event Tracking', cls: 'chip-indigo' },
+  { name: 'A/B Testing', cls: 'chip-cyan' },
+  { name: 'Funnel Marketing', cls: 'chip-pink' },
+  { name: 'Influencer Marketing', cls: 'chip-amber' },
+  { name: 'Excel / Google Sheets', cls: 'chip-indigo' },
+  { name: 'Manus AI', cls: 'chip-cyan' },
+];
+
+(function buildSkills() {
+  const barsEl = document.getElementById('skillBars');
+  skills.forEach(s => {
+    barsEl.innerHTML += `
+      <div class="skill-bar-item">
+        <div class="skill-bar-header">
+          <span class="skill-bar-name">${s.name}</span>
+          <span class="skill-bar-pct">${s.pct}%</span>
+        </div>
+        <div class="skill-bar-track">
+          <div class="skill-bar-fill" data-width="${s.pct}" style="background:${s.grad}"></div>
+        </div>
+      </div>`;
+  });
+
+  const chipsEl = document.getElementById('chipsCloud');
+  chips.forEach(c => {
+    const el = document.createElement('span');
+    el.className = `tech-chip ${c.cls}`;
+    el.textContent = c.name;
+    chipsEl.appendChild(el);
+  });
+})();
+
+/* ============================================================
+   EXPERIENCE DATA
+============================================================ */
+const experiences = [
+  { title: 'Marketing Manager', company: 'Daman Plus', location: 'Egypt', badges: ['All Platforms', 'Strategy', 'Management'] },
+  { title: 'Marketing Manager', company: 'Safer Free Travel', location: 'UAE', badges: ['All Platforms', 'Management'] },
+  { title: 'Marketing Manager', company: 'Yasmeen Alhumood', location: 'Saudi Arabia', badges: ['All Platforms', 'Management'] },
+  { title: 'Marketing Manager', company: 'Sayo Kitchen', location: 'KSA', badges: ['Social Media', 'Strategy'] },
+  { title: 'Media Buyer / Designer', company: 'Oryx Company', location: 'Qatar', badges: ['Meta Ads', 'Social Media', 'Design'] },
+  { title: 'Media Buyer / Designer', company: 'Lifescape Company', location: 'UAE', badges: ['All Platforms', 'Design', 'Social Media'] },
+  { title: 'Media Buyer / Designer', company: 'Creaova Company', location: 'Emirates', badges: ['Meta Ads', 'Design', 'Social Media'] },
+  { title: 'Media Buyer / Designer', company: 'Travels Group Company', location: 'Georgia', badges: ['All Platforms', 'Design', 'Social Media'] },
+  { title: 'Media Buyer (Google Ads)', company: 'Tiyn Store', location: 'Saudi Arabia', badges: ['Google Ads', 'Design'] },
+  { title: 'Media Buyer (Google Ads)', company: 'Habt Fn Store', location: 'Saudi Arabia', badges: ['Google Ads'] },
+  { title: 'Media Buyer (Google Ads)', company: 'Jeem Stores', location: 'Saudi Arabia', badges: ['Google Ads', 'Design'] },
+  { title: 'Marketing Plans / Media Buyer', company: 'SYD Company', location: 'Saudi Arabia', badges: ['Strategy', 'Media Buying'] },
+  { title: 'Media Buyer', company: 'Swedish Academy / Gym', location: 'Tunisia', badges: ['Meta Ads', 'Fitness'] },
+  { title: 'Media Buyer', company: 'Oacode Agency', location: 'Qatar', badges: ['Meta Ads'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Alfa Zone Stores', location: 'KSA • Qatar • Kuwait', badges: ['All Platforms', 'Multi-Region'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Al Qasim Clinics', location: 'Saudi Arabia', badges: ['Healthcare', 'All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Dawna Clinics', location: 'Saudi Arabia', badges: ['Healthcare', 'All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Tobal Clinics', location: 'Saudi Arabia', badges: ['Healthcare', 'All Platforms'] },
+  { title: 'Media Buyer (Meta Ads)', company: 'DR. Ahmed Fawzy Eye Clinic', location: 'Egypt', badges: ['Meta Ads', 'Healthcare'] },
+  { title: 'Media Buyer (Meta Ads)', company: 'Dr. Ayman Altabaa', location: 'Egypt', badges: ['Meta Ads', 'Healthcare'] },
+  { title: 'Media Buyer (Meta Ads)', company: 'Jahbath Academy', location: 'Oman', badges: ['Meta Ads', 'Education'] },
+  { title: 'Media Buyer (Meta Ads)', company: 'The Billion Cars Agency', location: 'Oman', badges: ['Meta Ads', 'Automotive'] },
+  { title: 'Media Buyer (Snapchat)', company: 'Azwaq Eltmoor Store', location: 'Saudi Arabia', badges: ['Snapchat Ads', 'E-commerce'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Easy Growth Agency', location: 'Saudi Arabia', badges: ['All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Ayla Agency', location: 'Egypt', badges: ['All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Smart Almanasah', location: 'Saudi Arabia', badges: ['All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Bannor Oud Store', location: 'Saudi Arabia', badges: ['Retail', 'Luxury'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Bunstar Restaurant', location: 'KSA', badges: ['F&B', 'All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Asmak Alnawrs Restaurant', location: 'Saudi Arabia', badges: ['F&B', 'All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Aldalah Al Mwzunah Store', location: 'Saudi Arabia', badges: ['E-commerce', 'All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Deka Store', location: 'Saudi Arabia', badges: ['E-commerce', 'All Platforms'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Goal Store', location: 'Saudi Arabia', badges: ['Retail', 'All Platforms'] },
+  { title: 'Media Buyer / Social Media', company: 'Safer Free Travel', location: 'Travel', badges: ['Meta Ads', 'Social Media', 'Travel'] },
+  { title: 'Media Buyer (All Platforms)', company: 'Artway Agency', location: 'Iraq', badges: ['All Platforms', 'Agency'] },
+];
+
+(function buildTimeline() {
+  const tl = document.getElementById('timeline');
+  const colors = ['#4f46e5','#ec4899','#06b6d4','#f59e0b'];
+  experiences.forEach((e, i) => {
+    tl.innerHTML += `
+      <div class="timeline-item" style="transition-delay:${(i % 5) * 0.08}s">
+        <div class="timeline-dot" style="background:${colors[i%4]};box-shadow:0 0 10px ${colors[i%4]}"></div>
+        <div class="timeline-card">
+          <div class="tc-top">
+            <div class="tc-title">${e.title}</div>
+            <div class="tc-location">${e.location}</div>
+          </div>
+          <div class="tc-company">${e.company}</div>
+          <div class="tc-badges">${e.badges.map(b=>`<span class="tc-badge">${b}</span>`).join('')}</div>
+        </div>
+      </div>`;
+  });
+})();
+
+/* ============================================================
+   PROJECTS DATA
+============================================================ */
+const projects = [
+  {
+    emoji: '🚀',
+    name: 'E-commerce Revenue Scaling',
+    desc: 'Scaled monthly revenue by 35% YoY for diverse e-commerce clients through strategic performance scaling, high-intent audience targeting, and creative optimization across Meta and Google.',
+    tags: ['Meta Ads', 'Google Ads', 'CRO', 'A/B Testing', 'E-commerce']
+  },
+  {
+    emoji: '🏠',
+    name: 'Real Estate Lead Generation',
+    desc: 'Decreased average Cost Per Lead (CPL) by 22% in the competitive Real Estate sector by implementing advanced retargeting funnels, lookalike audiences, and creative testing frameworks.',
+    tags: ['Lead Gen', 'Retargeting', 'Funnel Optimization', 'Meta Ads', 'Real Estate']
+  },
+  {
+    emoji: '💰',
+    name: '$500K+ Multi-Platform Ad Management',
+    desc: 'Managed and optimized a cumulative ad spend of $500K+ across Meta, Google, and TikTok, maintaining a consistent average ROAS of 4.2x with rigorous budget allocation strategies.',
+    tags: ['Meta Ads', 'Google Ads', 'TikTok', 'Budget Management', '$500K+ Spend']
+  },
+  {
+    emoji: '🧲',
+    name: 'Full-Funnel Brand Awareness Strategy',
+    desc: 'Engineered full-funnel AARRR marketing strategies that increased brand awareness by 50% while simultaneously driving a 15% growth in bottom-line conversions for lifestyle brands.',
+    tags: ['AARRR Framework', 'Brand Strategy', 'Full-Funnel', 'Growth Marketing']
+  },
+  {
+    emoji: '✈️',
+    name: 'Travel Industry Marketing Management',
+    desc: 'Served as Marketing Manager for Safer Free Travel (UAE), overseeing all paid channels and social media strategy. Grew engagement and bookings through multi-platform campaigns across Meta, Google, TikTok.',
+    tags: ['Travel', 'All Platforms', 'Social Media', 'Marketing Management']
+  },
+  {
+    emoji: '🏥',
+    name: 'Healthcare Clinic Growth Campaigns',
+    desc: 'Drove patient acquisition for 5+ clinics across KSA and Egypt (Tobal Clinics, Dawna Clinics, Al Qasim Clinics, Dr. Ahmed Fawzy, Dr. Ayman Altabaa) using targeted Meta and Google campaigns.',
+    tags: ['Healthcare', 'Lead Generation', 'Meta Ads', 'Google Ads', 'Patient Acquisition']
+  },
+  {
+    emoji: '🍽️',
+    name: 'F&B Restaurant Multi-Platform Campaigns',
+    desc: 'Managed paid media for multiple restaurant brands (Bunstar Restaurant KSA, Asmak Alnawrs KSA) driving foot traffic and online orders through performance-driven social and search campaigns.',
+    tags: ['F&B', 'Restaurants', 'All Platforms', 'Local Marketing']
+  },
+  {
+    emoji: '📊',
+    name: 'Data-Driven UX & Conversion Optimization',
+    desc: 'Utilized deep data analytics and heatmaps (Hotjar/GA4/MS Clarity) to identify drop-off points in user journeys, resulting in a 10% improvement in checkout conversion rates for e-commerce clients.',
+    tags: ['GA4', 'Hotjar', 'CRO', 'Data Analytics', 'UX Optimization']
+  },
+  {
+    emoji: '🤖',
+    name: 'AI-Powered Marketing Automation',
+    desc: 'Pioneered AI-driven workflow automation using ChatGPT, Claude, Midjourney Pro, and Adobe Firefly to accelerate ad creative production, audience modeling, and performance reporting at scale.',
+    tags: ['AI Tools', 'ChatGPT', 'Claude', 'Midjourney', 'Automation']
+  },
+];
+
+(function buildProjects() {
+  const grid = document.getElementById('projectsGrid');
+  projects.forEach((p, i) => {
+    const delay = (i % 3) * 0.1;
+    grid.innerHTML += `
+      <div class="project-card reveal" style="transition-delay:${delay}s">
+        <span class="project-emoji">${p.emoji}</span>
+        <div class="project-name">${p.name}</div>
+        <p class="project-desc">${p.desc}</p>
+        <div class="project-tags">${p.tags.map(t=>`<span class="project-tag">${t}</span>`).join('')}</div>
+      </div>`;
+  });
+})();
+
+/* ============================================================
+   SCROLL REVEAL + SKILL BARS
+============================================================ */
+function triggerScrollReveal() {
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .timeline-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Skill bars
+        entry.target.querySelectorAll('.skill-bar-fill, .lang-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        // Also handle if the bar itself is the target
+        if(entry.target.classList.contains('skill-bar-fill') || entry.target.classList.contains('lang-fill')) {
+          entry.target.style.width = entry.target.dataset.width + '%';
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Observe skill bars and lang fills directly
+  document.querySelectorAll('.skill-bar-fill, .lang-fill').forEach(bar => {
+    observer.observe(bar);
+  });
+}
+
+// Also run on DOMContentLoaded for fast loaders
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(triggerScrollReveal, 2400);
+});
+</script>
+</body>
+</html>
